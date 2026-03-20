@@ -71,7 +71,7 @@ export const translations = {
       tag:"Get In Touch", title:"Contact Us",
       company:"UMAI ECO LLC", location:"Bishkek, Kyrgyzstan",
       t1:"Partnership Inquiries", t2:"Wholesale Orders", t3:"Media & Press",
-      email:"info@umai-eco.com", site:"umai-eco.com"
+      email:"chigibugu@gmail.com", site:"umai-eco.com", instagram:"Instagram", whatsapp:"WhatsApp"
     },
     footer:{ rights:"© 2026 Umai Eco LLC. All rights reserved.", tagline:"Nomadic Superfoods from the Heart of Central Asia" },
     newsletter:{ title:"Stay Connected", sub:"Subscribe for updates on new products and wellness research.", placeholder:"Enter your email", btn:"Subscribe", success:"Subscribed!" }
@@ -148,7 +148,7 @@ export const translations = {
       tag:"Связаться", title:"Контакты",
       company:"UMAI ECO LLC", location:"Бишкек, Кыргызстан",
       t1:"Партнёрские Запросы", t2:"Оптовые Заказы", t3:"СМИ и Пресса",
-      email:"info@umai-eco.com", site:"umai-eco.com"
+      email:"chigibugu@gmail.com", site:"umai-eco.com", instagram:"Instagram", whatsapp:"WhatsApp"
     },
     footer:{ rights:"© 2026 Umai Eco LLC. Все права защищены.", tagline:"Кочевые суперфуды из сердца Центральной Азии" },
     newsletter:{ title:"Оставайтесь На Связи", sub:"Подпишитесь на новости о продуктах и исследованиях.", placeholder:"Введите email", btn:"Подписаться", success:"Подписано!" }

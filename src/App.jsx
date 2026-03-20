@@ -575,7 +575,17 @@ export default function App() {
             <SectionTitle>{t.contact.title}</SectionTitle>
             <p style={{ fontFamily: "var(--font-display)", fontSize: 22, color: "var(--dark)", marginBottom: 4 }}>{t.contact.company}</p>
             <p style={{ fontFamily: "var(--font-body)", fontSize: 15, color: "var(--warm)", marginBottom: 8, fontWeight: 300 }}>{t.contact.location}</p>
-            <p style={{ fontFamily: "var(--font-body)", fontSize: 14, color: "var(--gold)", marginBottom: 40, fontWeight: 300 }}>{t.contact.email}</p>
+            <a href={"mailto:" + t.contact.email} style={{ fontFamily: "var(--font-body)", fontSize: 14, color: "var(--gold)", fontWeight: 300, textDecoration: "none" }}>{t.contact.email}</a>
+            <div style={{ display: "flex", gap: 16, justifyContent: "center", margin: "28px 0 40px" }}>
+              <a href="https://www.instagram.com/umaieco_" target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 24px", border: "1px solid var(--border)", borderRadius: 8, textDecoration: "none" }}>
+                <span style={{ fontSize: 16 }}>📸</span>
+                <span style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--dark)", fontWeight: 300 }}>{t.contact.instagram}</span>
+              </a>
+              <a href="https://wa.me/996505588188" target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 24px", border: "1px solid var(--border)", borderRadius: 8, textDecoration: "none" }}>
+                <span style={{ fontSize: 16 }}>💬</span>
+                <span style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--dark)", fontWeight: 300 }}>{t.contact.whatsapp}</span>
+              </a>
+            </div>
           </FadeIn>
           <div style={{ display: "flex", gap: 20, justifyContent: "center", flexWrap: "wrap" }}>
             {[t.contact.t1, t.contact.t2, t.contact.t3].map((c, i) => (
@@ -596,7 +606,11 @@ export default function App() {
             <span style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--dark)" }}>UMAI</span>
             <span style={{ fontFamily: "var(--font-body)", fontSize: 8, letterSpacing: "0.25em", color: "var(--gold)" }}>ECO</span>
           </div>
-          <p style={{ fontFamily: "var(--font-body)", fontSize: 12, color: "var(--warm)", fontWeight: 300, fontStyle: "italic" }}>{t.footer.tagline}</p>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <a href="https://www.instagram.com/umaieco_" target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--font-body)", fontSize: 11, color: "var(--warm)", textDecoration: "none" }}>Instagram</a>
+              <a href="https://wa.me/996505588188" target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--font-body)", fontSize: 11, color: "var(--warm)", textDecoration: "none" }}>WhatsApp</a>
+              <a href={"mailto:" + t.contact.email} style={{ fontFamily: "var(--font-body)", fontSize: 11, color: "var(--warm)", textDecoration: "none" }}>{t.contact.email}</a>
+            </div>
           <p style={{ fontFamily: "var(--font-body)", fontSize: 11, color: "var(--warm)", fontWeight: 300 }}>{t.footer.rights}</p>
         </div>
       </footer>
