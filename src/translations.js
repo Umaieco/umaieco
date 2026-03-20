@@ -71,10 +71,36 @@ export const translations = {
       tag:"Get In Touch", title:"Contact Us",
       company:"UMAI ECO LLC", location:"Bishkek, Kyrgyzstan",
       t1:"Partnership Inquiries", t2:"Wholesale Orders", t3:"Media & Press",
-      email:"chigibugu@gmail.com", site:"umai-eco.com", instagram:"Instagram", whatsapp:"WhatsApp"
+      email:"chigibugu@gmail.com", site:"umai-eco.com",
+      instagram:"Instagram", whatsapp:"WhatsApp"
     },
     footer:{ rights:"© 2026 Umai Eco LLC. All rights reserved.", tagline:"Nomadic Superfoods from the Heart of Central Asia" },
-    newsletter:{ title:"Stay Connected", sub:"Subscribe for updates on new products and wellness research.", placeholder:"Enter your email", btn:"Subscribe", success:"Subscribed!" }
+    newsletter:{ title:"Stay Connected", sub:"Subscribe for updates on new products and wellness research.", placeholder:"Enter your email", btn:"Subscribe", success:"Subscribed!" },
+    video:{ tag:"Watch", title:"See Our Story", sub:"From the highlands of Kyrgyzstan to your table — discover how Umai Eco products are made.", placeholder:"Video coming soon. Subscribe to stay updated." },
+    blog:{ tag:"Journal", title:"News & Stories", sub:"Latest updates from Umai Eco.",
+      posts:[
+        { id:1, cat:"News", title:"Umai Eco Launches Online Store", excerpt:"We're excited to announce the launch of our online store, making it easier than ever to order our nomadic superfoods.", date:"March 2026", img:"/valley1-hq.jpg" },
+        { id:2, cat:"Science", title:"The Probiotic Power of Kumis", excerpt:"New research reveals why this ancient fermented drink may be one of nature's most potent sources of beneficial bacteria.", date:"March 2026", img:"/valley2-hq.jpg" },
+        { id:3, cat:"Culture", title:"Nomadic Horse Culture of Kyrgyzstan", excerpt:"A deep dive into the centuries-old relationship between the Kyrgyz people and their horses.", date:"February 2026", img:"/valley1-hq.jpg" },
+        { id:4, cat:"Nutrition", title:"Mare Milk vs. Cow Milk", excerpt:"Understanding the unique nutritional profile that makes mare milk closer to human milk than any other animal source.", date:"January 2026", img:"/valley2-hq.jpg" },
+        { id:5, cat:"Heritage", title:"From Genghis Khan to Modern Wellness", excerpt:"How a drink consumed by ancient warriors became the next frontier in functional nutrition.", date:"December 2025", img:"/valley1-hq.jpg" },
+        { id:6, cat:"Recipes", title:"5 Ways to Use Mare Milk Powder", excerpt:"Creative and delicious ways to incorporate this superfood into your daily routine.", date:"November 2025", img:"/valley2-hq.jpg" }
+      ],
+      readMore:"Read More", allCats:"All"
+    },
+    gallery:{ tag:"Gallery", title:"Our World", sub:"Scenes from the Kyrgyz highlands, our farm, and the making of Umai Eco products.", cats:{ all:"All", farm:"Farm", products:"Products", nature:"Nature" } },
+    shop:{ tag:"Shop", title:"Order Online", sub:"Select products and order directly via WhatsApp.",
+      addToCart:"Add to Cart", removeFromCart:"Remove", cart:"Cart", cartEmpty:"Your cart is empty",
+      checkout:"Order via WhatsApp", total:"Total", items:"items", currency:"сом",
+      products:[
+        { id:"k1", name:"Nomad Queen Kumys 500ml", price:350, img:"/bottles-hq.png", cat:"kumis" },
+        { id:"k2", name:"Royal Kumys with Honey 500ml", price:450, img:"/bottles-hq.png", cat:"kumis" },
+        { id:"p1", name:"Freeze-Dried Mare Milk 10×5g", price:600, img:"/sachets-hq.png", cat:"milk" },
+        { id:"h1", name:"At-Bashy White Honey 120g", price:250, img:"/honey120-hq.jpg", cat:"honey" },
+        { id:"h2", name:"At-Bashy White Honey 250g", price:400, img:"/honey250-hq.jpg", cat:"honey" },
+        { id:"h3", name:"At-Bashy White Honey 500g", price:700, img:"/honey500-hq.jpg", cat:"honey" }
+      ]
+    }
   },
   ru: {
     nav: { home:"Главная", about:"О нас", products:"Продукция", benefits:"Польза", farm:"Наша Ферма", partners:"Партнёрам", contact:"Контакты" },
@@ -148,9 +174,35 @@ export const translations = {
       tag:"Связаться", title:"Контакты",
       company:"UMAI ECO LLC", location:"Бишкек, Кыргызстан",
       t1:"Партнёрские Запросы", t2:"Оптовые Заказы", t3:"СМИ и Пресса",
-      email:"chigibugu@gmail.com", site:"umai-eco.com", instagram:"Instagram", whatsapp:"WhatsApp"
+      email:"chigibugu@gmail.com", site:"umai-eco.com",
+      instagram:"Instagram", whatsapp:"WhatsApp"
     },
     footer:{ rights:"© 2026 Umai Eco LLC. Все права защищены.", tagline:"Кочевые суперфуды из сердца Центральной Азии" },
-    newsletter:{ title:"Оставайтесь На Связи", sub:"Подпишитесь на новости о продуктах и исследованиях.", placeholder:"Введите email", btn:"Подписаться", success:"Подписано!" }
+    newsletter:{ title:"Оставайтесь На Связи", sub:"Подпишитесь на новости о продуктах и исследованиях.", placeholder:"Введите email", btn:"Подписаться", success:"Подписано!" },
+    video:{ tag:"Видео", title:"Наша История", sub:"От высокогорий Кыргызстана до вашего стола — узнайте, как создаются продукты Umai Eco.", placeholder:"Видео скоро появится. Подпишитесь, чтобы не пропустить." },
+    blog:{ tag:"Журнал", title:"Новости и Статьи", sub:"Последние обновления от Umai Eco.",
+      posts:[
+        { id:1, cat:"Новости", title:"Umai Eco запускает онлайн-магазин", excerpt:"Мы рады сообщить о запуске нашего онлайн-магазина, который упрощает заказ кочевых суперфудов.", date:"Март 2026", img:"/valley1-hq.jpg" },
+        { id:2, cat:"Наука", title:"Пробиотическая сила кумыса", excerpt:"Новые исследования показывают, почему этот древний напиток может быть одним из самых мощных источников полезных бактерий.", date:"Март 2026", img:"/valley2-hq.jpg" },
+        { id:3, cat:"Культура", title:"Кочевая культура коневодства Кыргызстана", excerpt:"Глубокий обзор многовековых отношений кыргызского народа и их лошадей.", date:"Февраль 2026", img:"/valley1-hq.jpg" },
+        { id:4, cat:"Питание", title:"Кобылье молоко vs Коровье молоко", excerpt:"Уникальный питательный профиль, который делает кобылье молоко ближе к грудному молоку.", date:"Январь 2026", img:"/valley2-hq.jpg" },
+        { id:5, cat:"Наследие", title:"От Чингисхана до современного велнеса", excerpt:"Как напиток древних воинов стал новым рубежом функционального питания.", date:"Декабрь 2025", img:"/valley1-hq.jpg" },
+        { id:6, cat:"Рецепты", title:"5 способов использовать сухое кобылье молоко", excerpt:"Креативные и вкусные способы включить этот суперфуд в ежедневный рацион.", date:"Ноябрь 2025", img:"/valley2-hq.jpg" }
+      ],
+      readMore:"Читать далее", allCats:"Все"
+    },
+    gallery:{ tag:"Галерея", title:"Наш Мир", sub:"Кадры с кыргызских высокогорий, нашей фермы и производства.", cats:{ all:"Все", farm:"Ферма", products:"Продукция", nature:"Природа" } },
+    shop:{ tag:"Магазин", title:"Заказать Онлайн", sub:"Выберите продукты и закажите напрямую через WhatsApp.",
+      addToCart:"В корзину", removeFromCart:"Убрать", cart:"Корзина", cartEmpty:"Корзина пуста",
+      checkout:"Заказать через WhatsApp", total:"Итого", items:"товаров", currency:"сом",
+      products:[
+        { id:"k1", name:"Nomad Queen Кумыс 500мл", price:350, img:"/bottles-hq.png", cat:"kumis" },
+        { id:"k2", name:"Royal Кумыс с мёдом 500мл", price:450, img:"/bottles-hq.png", cat:"kumis" },
+        { id:"p1", name:"Сухое кобылье молоко 10×5г", price:600, img:"/sachets-hq.png", cat:"milk" },
+        { id:"h1", name:"Белый мёд Ат-Башы 120г", price:250, img:"/honey120-hq.jpg", cat:"honey" },
+        { id:"h2", name:"Белый мёд Ат-Башы 250г", price:400, img:"/honey250-hq.jpg", cat:"honey" },
+        { id:"h3", name:"Белый мёд Ат-Башы 500г", price:700, img:"/honey500-hq.jpg", cat:"honey" }
+      ]
+    }
   }
 };

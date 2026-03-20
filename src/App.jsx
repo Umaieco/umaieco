@@ -169,6 +169,11 @@ export default function App() {
   const [subDone, setSubDone] = useState(false);
   const [formData, setFormData] = useState({ name:"", email:"", company:"", type:"", msg:"" });
   const [formSent, setFormSent] = useState(false);
+  const [cart, setCart] = useState([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [blogCat, setBlogCat] = useState("All");
+  const [galleryCat, setGalleryCat] = useState("all");
+  const [lightbox, setLightbox] = useState(null);
   const scrollY = useParallax();
   const t = translations[lang];
 
@@ -183,13 +188,43 @@ export default function App() {
     setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 50);
   };
 
+  const addToCart = (product) => {
+    setCart(prev => {
+      const existing = prev.find(i => i.id === product.id);
+      if (existing) return prev.map(i => i.id === product.id ? {...i, qty: i.qty + 1} : i);
+      return [...prev, {...product, qty: 1}];
+    });
+  };
+
+  const removeFromCart = (id) => setCart(prev => prev.filter(i => i.id !== id));
+  const updateQty = (id, delta) => setCart(prev => prev.map(i => i.id === id ? {...i, qty: Math.max(1, i.qty + delta)} : i));
+  const cartTotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+  const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
+
+  const sendWhatsApp = () => {
+    const items = cart.map(i => `${i.name} x${i.qty} = ${i.price * i.qty} ${t.shop.currency}`).join("%0A");
+    const msg = `${lang === "ru" ? "Здравствуйте! Хочу заказать" : "Hello! I'd like to order"}:%0A%0A${items}%0A%0A${t.shop.total}: ${cartTotal} ${t.shop.currency}`;
+    window.open(`https://wa.me/996505588188?text=${msg}`, "_blank");
+  };
+
+  const galleryItems = [
+    { src: "/bottles-hq.png", cat: "products", title: lang === "ru" ? "Кумыс Nomad Queen" : "Nomad Queen Kumys" },
+    { src: "/sachets-hq.png", cat: "products", title: lang === "ru" ? "Саше сухого молока" : "Mare Milk Sachets" },
+    { src: "/sachet-hq.png", cat: "products", title: lang === "ru" ? "Саше (одиночное)" : "Single Sachet" },
+    { src: "/honey250-hq.jpg", cat: "products", title: lang === "ru" ? "Мёд Ат-Башы 250г" : "At-Bashy Honey 250g" },
+    { src: "/honey120-hq.jpg", cat: "products", title: lang === "ru" ? "Мёд Ат-Башы 120г" : "At-Bashy Honey 120g" },
+    { src: "/honey500-hq.jpg", cat: "products", title: lang === "ru" ? "Мёд Ат-Башы 500г" : "At-Bashy Honey 500g" },
+    { src: "/valley1-hq.jpg", cat: "nature", title: lang === "ru" ? "Долина Тянь-Шань" : "Tien Shan Valley" },
+    { src: "/valley2-hq.jpg", cat: "nature", title: lang === "ru" ? "Альпийские луга" : "Alpine Meadows" },
+  ];
+
   const navItems = [
     { key: "home", label: t.nav.home, action: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
+    { key: "shop", label: lang === "ru" ? "Магазин" : "Shop", action: () => goSection("shop") },
     { key: "about", label: t.nav.about, action: () => goSection("about") },
     { key: "products", label: t.nav.products, action: () => goSection("products") },
-    { key: "farm", label: t.nav.farm, action: () => goSection("farm") },
-    { key: "benefits", label: t.nav.benefits, action: () => goSection("benefits") },
-    { key: "partners", label: t.nav.partners, action: () => goSection("partners") },
+    { key: "blog", label: lang === "ru" ? "Блог" : "Blog", action: () => goSection("blog") },
+    { key: "gallery", label: lang === "ru" ? "Галерея" : "Gallery", action: () => goSection("gallery") },
     { key: "contact", label: t.nav.contact, action: () => goSection("contact") },
   ];
 
@@ -223,6 +258,14 @@ export default function App() {
               fontFamily: "var(--font-body)", fontSize: 10, letterSpacing: "0.2em", padding: "5px 12px",
               border: "1px solid var(--border)", borderRadius: 3, background: "transparent", cursor: "pointer", color: "var(--warm)", fontWeight: 300
             }}>{lang === "en" ? "RU" : "EN"}</button>
+            {cartCount > 0 && (
+              <button onClick={() => goSection("shop")} style={{
+                position: "relative", background: "none", border: "1px solid var(--border)", borderRadius: 3, padding: "5px 10px",
+                cursor: "pointer", fontFamily: "var(--font-body)", fontSize: 12, color: "var(--dark)", boxShadow: "none", display: "flex", alignItems: "center", gap: 4
+              }}>
+                🛒 <span style={{ fontSize: 10, background: "var(--gold)", color: "#fff", borderRadius: "50%", width: 16, height: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>{cartCount}</span>
+              </button>
+            )}
           </div>
           <button className="mob-btn" onClick={() => setMenuOpen(!menuOpen)} style={{
             display: "none", flexDirection: "column", gap: 5, background: "none", border: "none", cursor: "pointer", padding: 10, zIndex: 1001, boxShadow: "none"
@@ -549,6 +592,180 @@ export default function App() {
         </div>
       </section>
 
+      {/* ========== SHOP ========== */}
+      <section id="shop" style={{ padding: "clamp(80px, 12vw, 140px) clamp(20px, 4vw, 48px)", background: "var(--cream)" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <FadeIn>
+            <div style={{ textAlign: "center", marginBottom: 56 }}>
+              <SectionTag>{t.shop.tag}</SectionTag>
+              <SectionTitle>{t.shop.title}</SectionTitle>
+              <p style={{ ...bodyText, maxWidth: 500, margin: "0 auto" }}>{t.shop.sub}</p>
+            </div>
+          </FadeIn>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24, marginBottom: 40 }}>
+            {t.shop.products.map((p, i) => (
+              <FadeIn key={p.id} delay={i * 0.06}>
+                <div className="product-hover" style={{ background: "#fff", borderRadius: 18, overflow: "hidden", cursor: "default", height: "100%" }}>
+                  <div style={{ padding: 24, background: "linear-gradient(145deg, #f8f5f0, #ede6d8)", display: "flex", alignItems: "center", justifyContent: "center", height: 200 }}>
+                    <img src={p.img} alt={p.name} loading="lazy" style={{ maxHeight: 160, maxWidth: "80%", objectFit: "contain" }} />
+                  </div>
+                  <div style={{ padding: 20 }}>
+                    <h4 style={{ fontFamily: "var(--font-display)", fontSize: 18, fontWeight: 400, color: "var(--dark)", marginBottom: 8 }}>{p.name}</h4>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--gold)", fontWeight: 400 }}>{p.price} {t.shop.currency}</span>
+                      {cart.find(c => c.id === p.id) ? (
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <button onClick={() => updateQty(p.id, -1)} style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid var(--border)", background: "transparent", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "none" }}>−</button>
+                          <span style={{ fontFamily: "var(--font-body)", fontSize: 14, minWidth: 20, textAlign: "center" }}>{cart.find(c => c.id === p.id)?.qty}</span>
+                          <button onClick={() => updateQty(p.id, 1)} style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid var(--border)", background: "transparent", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "none" }}>+</button>
+                          <button onClick={() => removeFromCart(p.id)} style={{ fontFamily: "var(--font-body)", fontSize: 11, color: "var(--warm)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", boxShadow: "none" }}>{t.shop.removeFromCart}</button>
+                        </div>
+                      ) : (
+                        <button onClick={() => addToCart(p)} style={{ ...btnPrimary, padding: "10px 20px", fontSize: 11 }}>{t.shop.addToCart}</button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+          {/* Cart summary */}
+          {cart.length > 0 && (
+            <FadeIn>
+              <div style={{ maxWidth: 500, margin: "0 auto", background: "#fff", borderRadius: 18, padding: 28, boxShadow: "0 4px 20px rgba(42,37,32,0.06)" }}>
+                <h4 style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 400, color: "var(--dark)", marginBottom: 16 }}>{t.shop.cart} ({cartCount} {t.shop.items})</h4>
+                {cart.map(item => (
+                  <div key={item.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid var(--border)" }}>
+                    <span style={{ fontFamily: "var(--font-body)", fontSize: 14, color: "var(--dark)", fontWeight: 300 }}>{item.name} × {item.qty}</span>
+                    <span style={{ fontFamily: "var(--font-body)", fontSize: 14, color: "var(--gold)", fontWeight: 400 }}>{item.price * item.qty} {t.shop.currency}</span>
+                  </div>
+                ))}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 0 20px", borderBottom: "none" }}>
+                  <span style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--dark)" }}>{t.shop.total}</span>
+                  <span style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--gold)" }}>{cartTotal} {t.shop.currency}</span>
+                </div>
+                <button onClick={sendWhatsApp} style={{ ...btnPrimary, width: "100%", background: "#25D366", padding: "16px 40px", fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
+                  <span>💬</span> {t.shop.checkout}
+                </button>
+              </div>
+            </FadeIn>
+          )}
+        </div>
+      </section>
+
+      {/* ========== VIDEO ========== */}
+      <section id="video" style={{ padding: "clamp(80px, 12vw, 120px) clamp(20px, 4vw, 48px)", background: "#fff" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
+          <FadeIn>
+            <SectionTag>{t.video.tag}</SectionTag>
+            <SectionTitle>{t.video.title}</SectionTitle>
+            <p style={{ ...bodyText, maxWidth: 540, margin: "0 auto 48px" }}>{t.video.sub}</p>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <div style={{ position: "relative", borderRadius: 20, overflow: "hidden", background: "var(--dark)", aspectRatio: "16/9", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              {/* Replace this div with YouTube embed when video is ready: */}
+              {/* <iframe width="100%" height="100%" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}/> */}
+              <div style={{ textAlign: "center", padding: 40 }}>
+                <div style={{ width: 80, height: 80, borderRadius: "50%", border: "2px solid var(--gold)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
+                  <span style={{ fontSize: 32, marginLeft: 4, color: "var(--gold)" }}>▶</span>
+                </div>
+                <p style={{ fontFamily: "var(--font-body)", fontSize: 15, color: "rgba(255,255,255,0.5)", fontWeight: 300 }}>{t.video.placeholder}</p>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ========== BLOG ========== */}
+      <section id="blog" style={{ padding: "clamp(80px, 12vw, 140px) clamp(20px, 4vw, 48px)", background: "var(--cream)" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionTag>{t.blog.tag}</SectionTag>
+            <SectionTitle>{t.blog.title}</SectionTitle>
+            <p style={{ ...bodyText, maxWidth: 500, marginBottom: 32 }}>{t.blog.sub}</p>
+          </FadeIn>
+          {/* Category filter */}
+          <FadeIn delay={0.05}>
+            <div style={{ display: "flex", gap: 10, marginBottom: 40, flexWrap: "wrap" }}>
+              {[t.blog.allCats, ...new Set(t.blog.posts.map(p => p.cat))].map(cat => (
+                <button key={cat} onClick={() => setBlogCat(cat === t.blog.allCats ? "All" : cat)} style={{
+                  fontFamily: "var(--font-body)", fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase",
+                  padding: "8px 20px", borderRadius: 20, cursor: "pointer", fontWeight: 300,
+                  background: (blogCat === "All" && cat === t.blog.allCats) || blogCat === cat ? "var(--dark)" : "transparent",
+                  color: (blogCat === "All" && cat === t.blog.allCats) || blogCat === cat ? "#fff" : "var(--warm)",
+                  border: "1px solid var(--border)", transition: "all 0.3s", boxShadow: "none"
+                }}>{cat}</button>
+              ))}
+            </div>
+          </FadeIn>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 28 }}>
+            {t.blog.posts.filter(p => blogCat === "All" || p.cat === blogCat).map((post, i) => (
+              <FadeIn key={post.id} delay={i * 0.06}>
+                <div className="product-hover" style={{ background: "#fff", borderRadius: 18, overflow: "hidden", cursor: "pointer", height: "100%" }}>
+                  <div style={{ height: 200, overflow: "hidden" }}>
+                    <img src={post.img} alt={post.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s" }} />
+                  </div>
+                  <div style={{ padding: 24 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
+                      <span style={{ fontFamily: "var(--font-body)", fontSize: 11, letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--gold)" }}>{post.cat}</span>
+                      <span style={{ fontFamily: "var(--font-body)", fontSize: 12, color: "var(--warm)", fontWeight: 300 }}>{post.date}</span>
+                    </div>
+                    <h4 style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 400, color: "var(--dark)", marginBottom: 8, lineHeight: 1.3 }}>{post.title}</h4>
+                    <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--warm)", lineHeight: 1.7, fontWeight: 300, marginBottom: 12 }}>{post.excerpt}</p>
+                    <span style={{ fontFamily: "var(--font-body)", fontSize: 12, color: "var(--gold)", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 400 }}>{t.blog.readMore} →</span>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ========== GALLERY ========== */}
+      <section id="gallery" style={{ padding: "clamp(80px, 12vw, 140px) clamp(20px, 4vw, 48px)", background: "#fff" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionTag>{t.gallery.tag}</SectionTag>
+            <SectionTitle>{t.gallery.title}</SectionTitle>
+            <p style={{ ...bodyText, maxWidth: 500, marginBottom: 32 }}>{t.gallery.sub}</p>
+          </FadeIn>
+          <FadeIn delay={0.05}>
+            <div style={{ display: "flex", gap: 10, marginBottom: 40, flexWrap: "wrap" }}>
+              {Object.entries(t.gallery.cats).map(([key, label]) => (
+                <button key={key} onClick={() => setGalleryCat(key)} style={{
+                  fontFamily: "var(--font-body)", fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase",
+                  padding: "8px 20px", borderRadius: 20, cursor: "pointer", fontWeight: 300,
+                  background: galleryCat === key ? "var(--dark)" : "transparent",
+                  color: galleryCat === key ? "#fff" : "var(--warm)",
+                  border: "1px solid var(--border)", transition: "all 0.3s", boxShadow: "none"
+                }}>{label}</button>
+              ))}
+            </div>
+          </FadeIn>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
+            {galleryItems.filter(g => galleryCat === "all" || g.cat === galleryCat).map((g, i) => (
+              <FadeIn key={i} delay={i * 0.05}>
+                <div onClick={() => setLightbox(g)} style={{ cursor: "pointer", borderRadius: 16, overflow: "hidden", position: "relative", aspectRatio: "4/3", transition: "transform 0.4s" }} className="product-hover">
+                  <img src={g.src} alt={g.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(42,37,32,0.5), transparent 50%)", opacity: 0, transition: "opacity 0.3s" }} onMouseEnter={e => e.target.style.opacity = 1} onMouseLeave={e => e.target.style.opacity = 0}>
+                    <span style={{ position: "absolute", bottom: 16, left: 16, fontFamily: "var(--font-body)", fontSize: 13, color: "#fff", fontWeight: 300 }}>{g.title}</span>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Lightbox */}
+      {lightbox && (
+        <div onClick={() => setLightbox(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.9)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, cursor: "pointer" }}>
+          <button onClick={() => setLightbox(null)} style={{ position: "absolute", top: 20, right: 24, background: "none", border: "none", color: "#fff", fontSize: 32, cursor: "pointer", boxShadow: "none" }}>×</button>
+          <img src={lightbox.src} alt={lightbox.title} style={{ maxWidth: "90%", maxHeight: "85vh", objectFit: "contain", borderRadius: 12 }} />
+          <p style={{ position: "absolute", bottom: 24, fontFamily: "var(--font-body)", fontSize: 14, color: "rgba(255,255,255,0.7)", fontWeight: 300 }}>{lightbox.title}</p>
+        </div>
+      )}
+
       {/* ========== NEWSLETTER ========== */}
       <section style={{ padding: "clamp(60px, 8vw, 100px) 24px", background: "var(--dark)" }}>
         <div style={{ maxWidth: 540, margin: "0 auto", textAlign: "center" }}>
@@ -576,13 +793,30 @@ export default function App() {
             <p style={{ fontFamily: "var(--font-display)", fontSize: 22, color: "var(--dark)", marginBottom: 4 }}>{t.contact.company}</p>
             <p style={{ fontFamily: "var(--font-body)", fontSize: 15, color: "var(--warm)", marginBottom: 8, fontWeight: 300 }}>{t.contact.location}</p>
             <a href={"mailto:" + t.contact.email} style={{ fontFamily: "var(--font-body)", fontSize: 14, color: "var(--gold)", fontWeight: 300, textDecoration: "none" }}>{t.contact.email}</a>
+            
+            {/* Social Links */}
             <div style={{ display: "flex", gap: 16, justifyContent: "center", margin: "28px 0 40px" }}>
-              <a href="https://www.instagram.com/umaieco_" target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 24px", border: "1px solid var(--border)", borderRadius: 8, textDecoration: "none" }}>
-                <span style={{ fontSize: 16 }}>📸</span>
+              <a href="https://www.instagram.com/umaieco_" target="_blank" rel="noopener noreferrer" style={{
+                display: "flex", alignItems: "center", gap: 8, padding: "12px 24px",
+                border: "1px solid var(--border)", borderRadius: 8, textDecoration: "none",
+                transition: "all 0.3s", cursor: "pointer"
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--dark)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5"/>
+                  <circle cx="12" cy="12" r="5"/>
+                  <circle cx="17.5" cy="6.5" r="1" fill="var(--dark)" stroke="none"/>
+                </svg>
                 <span style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--dark)", fontWeight: 300 }}>{t.contact.instagram}</span>
               </a>
-              <a href="https://wa.me/996505588188" target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 24px", border: "1px solid var(--border)", borderRadius: 8, textDecoration: "none" }}>
-                <span style={{ fontSize: 16 }}>💬</span>
+              
+              <a href="https://wa.me/996505588188" target="_blank" rel="noopener noreferrer" style={{
+                display: "flex", alignItems: "center", gap: 8, padding: "12px 24px",
+                border: "1px solid var(--border)", borderRadius: 8, textDecoration: "none",
+                transition: "all 0.3s", cursor: "pointer"
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--dark)">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
                 <span style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--dark)", fontWeight: 300 }}>{t.contact.whatsapp}</span>
               </a>
             </div>
@@ -607,10 +841,18 @@ export default function App() {
             <span style={{ fontFamily: "var(--font-body)", fontSize: 8, letterSpacing: "0.25em", color: "var(--gold)" }}>ECO</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <a href="https://www.instagram.com/umaieco_" target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--font-body)", fontSize: 11, color: "var(--warm)", textDecoration: "none" }}>Instagram</a>
-              <a href="https://wa.me/996505588188" target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--font-body)", fontSize: 11, color: "var(--warm)", textDecoration: "none" }}>WhatsApp</a>
-              <a href={"mailto:" + t.contact.email} style={{ fontFamily: "var(--font-body)", fontSize: 11, color: "var(--warm)", textDecoration: "none" }}>{t.contact.email}</a>
-            </div>
+            <a href="https://www.instagram.com/umaieco_" target="_blank" rel="noopener noreferrer" style={{ color: "var(--warm)", transition: "color 0.3s" }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+              </svg>
+            </a>
+            <a href="https://wa.me/996505588188" target="_blank" rel="noopener noreferrer" style={{ color: "var(--warm)", transition: "color 0.3s" }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+            </a>
+            <a href={"mailto:" + t.contact.email} style={{ fontFamily: "var(--font-body)", fontSize: 11, color: "var(--warm)", fontWeight: 300, textDecoration: "none" }}>{t.contact.email}</a>
+          </div>
           <p style={{ fontFamily: "var(--font-body)", fontSize: 11, color: "var(--warm)", fontWeight: 300 }}>{t.footer.rights}</p>
         </div>
       </footer>
